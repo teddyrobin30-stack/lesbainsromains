@@ -147,7 +147,7 @@ const ReservationSystem = () => {
     notes: ''
   });
   const [submitStatus, setSubmitStatus] = useState('idle');
-  const [unavailableSlots, setUnavailableSlots] = useState(['10:00', '14:30']); // Simulation initiale
+  const [unavailableSlots, setUnavailableSlots] = useState([]); // Simulation initiale
 
   // Génération des jours du mois
   const generateCalendarDays = () => {
@@ -174,11 +174,8 @@ const ReservationSystem = () => {
 
   const handleDateSelect = (date) => {
     setBookingData({ ...bookingData, date, time: null });
-    
-    // Simulation pour l'instant : on change aléatoirement les créneaux indisponibles
-    const simulatedBusy = timeSlots.filter(() => Math.random() > 0.8);
-    setUnavailableSlots(simulatedBusy);
-  };
+    setUnavailableSlots([]); // On rend tout disponible
+};
 
   const handleTimeSelect = (time) => {
     setBookingData({ ...bookingData, time });
