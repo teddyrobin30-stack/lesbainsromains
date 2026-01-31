@@ -468,15 +468,15 @@ const ReservationSystem = () => {
 
                {/* Formulaire */}
                <div className="md:w-2/3">
-                 <h3 className="text-3xl font-serif text-center md:text-left text-stone-800 mb-10">Vos coordonnées</h3>
+                 <h3 className="text-3xl font-serif text-center md:text-left text-stone-800 mb-10">Vos coordonnées pour la confirmation</h3>
                  
                  {submitStatus === 'success' ? (
                    <div className="bg-green-50 border border-green-200 p-8 text-center rounded-lg">
                       <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
                         <CheckCircle className="text-green-600" size={32} />
                       </div>
-                      <h4 className="text-2xl font-serif text-stone-800 mb-2">Demande confirmée</h4>
-                      <p className="text-stone-600">Un email de confirmation vient de vous être envoyé à {bookingData.email}.</p>
+                      <h4 className="text-2xl font-serif text-stone-800 mb-2">Demande bien reçue !</h4>
+                      <p className="text-stone-600">Nous allons vérifier la disponibilité de ce créneau et vous confirmer le rendez-vous par téléphone ou par mail très rapidement à {bookingData.email}.</p>
                    </div>
                  ) : (
                    <form onSubmit={handleSubmit} className="space-y-8">
@@ -550,7 +550,7 @@ const ReservationSystem = () => {
                           disabled={submitStatus === 'loading'}
                           className={`w-full ${THEME.primary} ${THEME.primaryHover} text-white px-8 py-4 font-bold text-xs uppercase tracking-[0.2em] transition shadow-xl`}
                         >
-                          {submitStatus === 'loading' ? 'Traitement...' : 'Confirmer la réservation'}
+                          {submitStatus === 'loading' ? 'Traitement...' : 'Envoyer ma demande de réservation'}
                         </button>
                       </div>
                    </form>
