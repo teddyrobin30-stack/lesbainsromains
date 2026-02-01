@@ -857,6 +857,65 @@ const App = () => {
         </div>
       </section>
 
+{/* --- SECTION FAQ (QUESTIONS FRÉQUENTES) --- */}
+<section className="py-20 bg-white">
+        <div className="max-w-4xl mx-auto px-6 lg:px-8">
+          
+          <div className="text-center mb-12">
+            <h2 className="text-3xl font-serif text-stone-800">Questions Fréquentes</h2>
+            <div className="w-12 h-0.5 bg-[#D4AF37] mx-auto mt-4"></div>
+          </div>
+
+          <div className="space-y-4">
+            
+            {/* Question 1 */}
+            <details className="group bg-stone-50 rounded-lg p-6 cursor-pointer border border-transparent hover:border-[#D4AF37]/30 transition duration-300">
+              <summary className="flex justify-between items-center font-serif text-lg text-stone-800 font-medium list-none">
+                <span>Quels équipements dois-je apporter ?</span>
+                <span className="text-[#D4AF37] text-2xl group-open:rotate-45 transition-transform duration-300">+</span>
+              </summary>
+              <p className="text-stone-500 mt-4 leading-relaxed">
+                Le port du maillot de bain est obligatoire (shorts de bain autorisés). Nous vous fournissons peignoirs, serviettes et chaussons pour votre confort dès votre arrivée.
+              </p>
+            </details>
+
+            {/* Question 2 */}
+            <details className="group bg-stone-50 rounded-lg p-6 cursor-pointer border border-transparent hover:border-[#D4AF37]/30 transition duration-300">
+              <summary className="flex justify-between items-center font-serif text-lg text-stone-800 font-medium list-none">
+                <span>Puis-je venir sans être client de l'hôtel ?</span>
+                <span className="text-[#D4AF37] text-2xl group-open:rotate-45 transition-transform duration-300">+</span>
+              </summary>
+              <p className="text-stone-500 mt-4 leading-relaxed">
+                Absolument ! Le Spa Les Bains Romains est ouvert à la clientèle extérieure sur réservation. Profitez de nos soins et de l'espace détente même si vous ne dormez pas sur place.
+              </p>
+            </details>
+
+            {/* Question 3 */}
+            <details className="group bg-stone-50 rounded-lg p-6 cursor-pointer border border-transparent hover:border-[#D4AF37]/30 transition duration-300">
+              <summary className="flex justify-between items-center font-serif text-lg text-stone-800 font-medium list-none">
+                <span>Les femmes enceintes peuvent-elles faire des soins ?</span>
+                <span className="text-[#D4AF37] text-2xl group-open:rotate-45 transition-transform duration-300">+</span>
+              </summary>
+              <p className="text-stone-500 mt-4 leading-relaxed">
+                Certains soins sont adaptés aux futures mamans (après le 3ème mois de grossesse). Merci de le préciser lors de la réservation afin que nous puissions adapter le protocole.
+              </p>
+            </details>
+
+            {/* Question 4 */}
+             <details className="group bg-stone-50 rounded-lg p-6 cursor-pointer border border-transparent hover:border-[#D4AF37]/30 transition duration-300">
+              <summary className="flex justify-between items-center font-serif text-lg text-stone-800 font-medium list-none">
+                <span>Y a-t-il un parking ?</span>
+                <span className="text-[#D4AF37] text-2xl group-open:rotate-45 transition-transform duration-300">+</span>
+              </summary>
+              <p className="text-stone-500 mt-4 leading-relaxed">
+                Oui, un parking gratuit est disponible pour la clientèle du Spa et de l'Hôtel Mercure.
+              </p>
+            </details>
+
+          </div>
+        </div>
+      </section>
+
       {/* --- NOUVEAU SYSTÈME DE RÉSERVATION --- */}
       <section id="reservation" className="py-24 bg-stone-900 text-white relative overflow-hidden">
         <div className="absolute inset-0 opacity-10" style={{backgroundImage: 'url("https://www.transparenttextures.com/patterns/cubes.png")'}}></div>
