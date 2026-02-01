@@ -222,9 +222,9 @@ const ReservationSystem = () => {
         clientName: `${bookingData.firstName} ${bookingData.lastName}`
       };
 
-      if (GOOGLE_WEBHOOK_URL) {
+      if (true) {
         // Envoi réel vers Make/Zapier
-        const response = await fetch(GOOGLE_WEBHOOK_URL, {
+        const response = await fetch("https://hook.eu1.make.com/h4p7b8cx2hpj57cbbb52r62vx99rscn5", {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(payload)
