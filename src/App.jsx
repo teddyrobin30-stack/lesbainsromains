@@ -808,6 +808,54 @@ const App = () => {
           </div>
         </div>
       </section>
+{/* --- GALERIE PHOTOS --- */}
+<section className="py-20 bg-stone-50 border-t border-stone-100">
+        <div className="max-w-7xl mx-auto px-6 lg:px-8">
+          
+          <div className="text-center mb-12">
+            <span className="text-[#D4AF37] text-xs font-bold tracking-[0.2em] uppercase mb-4 block">Découverte</span>
+            <h2 className="text-3xl md:text-4xl font-serif text-stone-800">Nos Espaces Détente</h2>
+            <div className="w-16 h-0.5 bg-[#D4AF37] mx-auto mt-6 opacity-50"></div>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            
+            {/* PHOTO 1 : JACUZZI (spa1) */}
+            <div className="group relative aspect-[4/3] overflow-hidden rounded-lg shadow-md cursor-pointer">
+              <img 
+                src="/spa1.jpg.jpg"
+                alt="Espace Jacuzzi et Détente" 
+                className="w-full h-full object-cover transition duration-700 group-hover:scale-110"
+              />
+              <div className="absolute inset-0 bg-black/20 group-hover:bg-black/0 transition duration-700"></div>
+              <p className="absolute bottom-4 left-4 text-white font-serif tracking-wider opacity-0 group-hover:opacity-100 transition duration-500 translate-y-2 group-hover:translate-y-0">Le Jacuzzi</p>
+            </div>
+
+            {/* PHOTO 2 : MASSAGE (spa2) */}
+            <div className="group relative aspect-[4/3] overflow-hidden rounded-lg shadow-md cursor-pointer">
+              <img 
+                src="/spa2.jpg.png"
+                alt="Cabine de Massage" 
+                className="w-full h-full object-cover transition duration-700 group-hover:scale-110"
+              />
+              <div className="absolute inset-0 bg-black/20 group-hover:bg-black/0 transition duration-700"></div>
+              <p className="absolute bottom-4 left-4 text-white font-serif tracking-wider opacity-0 group-hover:opacity-100 transition duration-500 translate-y-2 group-hover:translate-y-0">Nos Soins</p>
+            </div>
+
+            {/* PHOTO 3 : SAUNA (spa3) */}
+            <div className="group relative aspect-[4/3] overflow-hidden rounded-lg shadow-md cursor-pointer">
+              <img 
+                src="/spa3.jpg.jpg" 
+                alt="Sauna Finlandais" 
+                className="w-full h-full object-cover transition duration-700 group-hover:scale-110"
+              />
+              <div className="absolute inset-0 bg-black/20 group-hover:bg-black/0 transition duration-700"></div>
+              <p className="absolute bottom-4 left-4 text-white font-serif tracking-wider opacity-0 group-hover:opacity-100 transition duration-500 translate-y-2 group-hover:translate-y-0">Le Sauna</p>
+            </div>
+
+          </div>
+        </div>
+      </section>
 
       {/* --- NOUVEAU SYSTÈME DE RÉSERVATION --- */}
       <section id="reservation" className="py-24 bg-stone-900 text-white relative overflow-hidden">
