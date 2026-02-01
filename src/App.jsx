@@ -289,6 +289,9 @@ const ReservationSystem = () => {
           <div>
             <div className="text-center mb-10">
               <h3 className="text-3xl font-serif text-stone-800 mb-6">Choisissez votre soin</h3>
+              <p className="text-stone-500 text-sm italic -mt-6 mb-8 text-center">
+              (La durée des soins inclut le temps de déshabillage, rhabillage et éventuelle douche)
+            </p>
               <div className="flex flex-wrap justify-center gap-3">
                 {categories.map((cat) => (
                   <button
