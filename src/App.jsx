@@ -740,7 +740,7 @@ const App = () => {
                   />
                   {/* Gold Accents */}
                   <div className="absolute -bottom-6 -left-6 w-24 h-24 bg-[#D4AF37]/20 z-0"></div>
-                  <div className="absolute -top-6 -right-6 w-32 h-32 border border-stone-200 z-0"></div>
+                
                 </div>
               </FadeIn>
             </div>
