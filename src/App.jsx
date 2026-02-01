@@ -827,7 +827,19 @@ const App = () => {
           
         </div>
       </section>
-
+{/* --- MAP SECTION --- */}
+{/* --- MAP SECTION --- */}
+<section className="h-96 w-full">
+        <iframe 
+          src="https://maps.google.com/maps?q=Mercure+Saint+Nectaire+Les+Bains+Romains&t=&z=15&ie=UTF8&iwloc=&output=embed"
+          width="100%" 
+          height="100%" 
+          style={{border:0}} 
+          allowFullScreen="" 
+          loading="lazy"
+          title="Carte Mercure Saint-Nectaire"
+        ></iframe>
+      </section>
       {/* --- FOOTER --- */}
       <footer id="contact" className="bg-white pt-24 pb-12 border-t border-stone-100">
         <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-3 gap-16 text-center md:text-left">
