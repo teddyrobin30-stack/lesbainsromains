@@ -1,0 +1,12 @@
+node_modules
+dist
+.git
+.github
+*.md
+Dockerfile
+docker-compose.yml
+*.py
+ssh_key*
+antigravity_vps_key*
+.gemini
+tmp

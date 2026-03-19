@@ -1,0 +1,21 @@
+version: '3.8'
+
+services:
+  website:
+    build: .
+    container_name: lesbainsromains-web
+    restart: unless-stopped
+    networks:
+      - traefik-network
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.lesbainsromains.rule=Host(`lesbainsromains.fr`, `srv1409072.hstgr.cloud`)"
+      - "traefik.http.routers.lesbainsromains.entrypoints=websecure"
+      - "traefik.http.routers.lesbainsromains.tls=true"
+      - "traefik.http.routers.lesbainsromains.tls.certresolver=myresolver"
+      - "traefik.http.services.lesbainsromains.loadbalancer.server.port=80"
+
+networks:
+  traefik-network:
+    external: true
+    name: n8n_default # Using the existing network from n8n/traefik
