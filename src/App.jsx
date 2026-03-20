@@ -1,18 +1,31 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { onAuthStateChanged, signOut } from 'firebase/auth';
+import { auth } from './firebase';
 import MainWebsite from './components/MainWebsite';
 import AdminPanel from './components/AdminPanel';
-import { 
-  DEFAULT_CONTACT_INFO, 
-  DEFAULT_OPENING_HOURS, 
-  DEFAULT_SERVICES_DATA, 
-  DEFAULT_EVENTS, 
+import AdminLogin from './components/AdminLogin';
+import {
+  DEFAULT_CONTACT_INFO,
+  DEFAULT_OPENING_HOURS,
+  DEFAULT_SERVICES_DATA,
+  DEFAULT_EVENTS,
   DEFAULT_SITE_CONTENT,
-  THEME, 
-  categories 
+  THEME,
+  categories
 } from './data/constants';
 
 const App = () => {
   const [isAdminMode, setIsAdminMode] = useState(false);
+  const [adminUser, setAdminUser] = useState(null);
+  const [authChecked, setAuthChecked] = useState(false);
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      setAdminUser(user);
+      setAuthChecked(true);
+    });
+    return unsubscribe;
+  }, []);
   
   // --- PERSISTENT STATES ---
   const [contactInfo, setContactInfo] = useState(() => {
@@ -105,8 +118,14 @@ const App = () => {
   };
 
   if (isAdminMode) {
+    if (!authChecked) return null;
+
+    if (!adminUser) {
+      return <AdminLogin onCancel={() => setIsAdminMode(false)} />;
+    }
+
     return (
-      <AdminPanel 
+      <AdminPanel
         contactInfo={contactInfo}
         setContactInfo={setContactInfo}
         services={services}
@@ -121,7 +140,7 @@ const App = () => {
         setBlockedSlots={setBlockedSlots}
         siteContent={siteContent}
         setSiteContent={setSiteContent}
-        onExit={() => setIsAdminMode(false)}
+        onExit={() => { signOut(auth); setIsAdminMode(false); }}
         categories={categories}
       />
     );
