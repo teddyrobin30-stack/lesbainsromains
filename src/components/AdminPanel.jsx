@@ -33,7 +33,7 @@ const AdminPanel = ({
   setSiteContent
 }) => {
   const [password, setPassword] = useState("");
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(true);
   const [activeTab, setActiveTab] = useState("dashboard");
   const [editService, setEditService] = useState(null);
   const [editEvent, setEditEvent] = useState(null);
