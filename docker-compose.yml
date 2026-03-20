@@ -9,7 +9,7 @@ services:
       - traefik-network
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.lesbainsromains.rule=Host(`lesbainsromains.fr`, `srv1409072.hstgr.cloud`)"
+      - "traefik.http.routers.lesbainsromains.rule=Host(`lesbainsromains.fr`)"
       - "traefik.http.routers.lesbainsromains.entrypoints=websecure"
       - "traefik.http.routers.lesbainsromains.tls=true"
       - "traefik.http.routers.lesbainsromains.tls.certresolver=myresolver"

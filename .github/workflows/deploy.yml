@@ -1,4 +1,4 @@
-name: Deploy to Hostinger
+name: Deploy
 
 on:
   push:
@@ -15,7 +15,6 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-with-package-manager: 'npm'
           node-version: '20'
 
       - name: Install dependencies
@@ -24,21 +23,10 @@ jobs:
       - name: Build project
         run: npm run build
 
-      - name: Deploy to VPS
-        uses: appleboy/scp-action@v0.1.7
+      - name: Deploy to Firebase Hosting
+        uses: FirebaseExtended/action-hosting-deploy@v0
         with:
-          host: ${{ secrets.HOSTINGER_IP }}
-          username: root
-          key: ${{ secrets.HOSTINGER_SSH_PRIVATE_KEY }}
-          source: "dist/*"
-          target: "/var/www/lesbainsromains"
-          strip_components: 1
-
-      - name: Restart Nginx
-        uses: appleboy/ssh-action@v1.0.3
-        with:
-          host: ${{ secrets.HOSTINGER_IP }}
-          username: root
-          key: ${{ secrets.HOSTINGER_SSH_PRIVATE_KEY }}
-          script: |
-            systemctl reload nginx
+          repoToken: ${{ secrets.GITHUB_TOKEN }}
+          firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+          channelId: live
+          projectId: spa-les-bains-romains
