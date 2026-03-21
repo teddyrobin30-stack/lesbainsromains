@@ -38,6 +38,8 @@ const AdminPanel = ({
   const [viewMode, setViewMode] = useState("active"); // "active" or "archived" for reservations
   const [selectedSlotDate, setSelectedSlotDate] = useState(new Date().toISOString().split('T')[0]);
   const [editReservation, setEditReservation] = useState(null); // { id, dateISO, time }
+  const [showCreateRes, setShowCreateRes] = useState(false);
+  const [createResForm, setCreateResForm] = useState({ serviceId: '', date: '', time: '', firstName: '', lastName: '', phone: '', email: '', notes: '' });
 
   const handleFileUpload = (e, section, field, spaceId = null) => {
     const file = e.target.files[0];
@@ -230,6 +232,33 @@ const AdminPanel = ({
     // TODO: appel API Gmail
     console.log('[Gmail API] Payload prêt :', emailPayload);
     setReservations(prev => prev.map(r => r.id === res.id ? { ...r, confirmationSent: true } : r));
+  };
+
+  const handleCreateReservation = (e) => {
+    e.preventDefault();
+    const service = services.find(s => s.id === parseInt(createResForm.serviceId));
+    if (!service) return;
+    const dateObj = new Date(createResForm.date + 'T12:00:00');
+    const formattedDate = dateObj.toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
+    const newRes = {
+      id: Date.now(),
+      createdAt: new Date().toISOString(),
+      serviceId: service.id,
+      serviceTitle: service.title,
+      date: formattedDate,
+      dateISO: createResForm.date,
+      time: createResForm.time,
+      firstName: createResForm.firstName,
+      lastName: createResForm.lastName,
+      email: createResForm.email,
+      phone: createResForm.phone,
+      notes: createResForm.notes,
+      archived: false,
+      status: 'En attente',
+    };
+    setReservations(prev => [...prev, newRes]);
+    setCreateResForm({ serviceId: '', date: '', time: '', firstName: '', lastName: '', phone: '', email: '', notes: '' });
+    setShowCreateRes(false);
   };
 
   // --- LOGIQUE CRÉNEAUX ---
@@ -591,8 +620,74 @@ const AdminPanel = ({
 
         {activeTab === "reservations" && (
           <div className="space-y-8">
+            {showCreateRes && (
+              <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+                <div className="bg-white rounded-xl shadow-2xl w-full max-w-lg p-6">
+                  <div className="flex justify-between items-center mb-6">
+                    <h4 className="text-xl font-serif text-stone-800">Nouvelle réservation</h4>
+                    <button onClick={() => setShowCreateRes(false)}><X size={20} className="text-stone-400 hover:text-stone-700" /></button>
+                  </div>
+                  <form onSubmit={handleCreateReservation} className="space-y-4">
+                    <div>
+                      <label className="text-[10px] font-bold text-stone-400 uppercase tracking-widest">Soin</label>
+                      <select required value={createResForm.serviceId} onChange={e => setCreateResForm(p => ({ ...p, serviceId: e.target.value }))} className="w-full border-b border-stone-300 py-2 text-sm focus:outline-none focus:border-[#D4AF37] bg-white">
+                        <option value="">Choisir un soin...</option>
+                        {services.map(s => <option key={s.id} value={s.id}>{s.title} — {s.price}</option>)}
+                      </select>
+                    </div>
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <label className="text-[10px] font-bold text-stone-400 uppercase tracking-widest">Date</label>
+                        <input required type="date" value={createResForm.date} onChange={e => setCreateResForm(p => ({ ...p, date: e.target.value }))} className="w-full border-b border-stone-300 py-2 text-sm focus:outline-none focus:border-[#D4AF37]" />
+                      </div>
+                      <div>
+                        <label className="text-[10px] font-bold text-stone-400 uppercase tracking-widest">Heure</label>
+                        <select required value={createResForm.time} onChange={e => setCreateResForm(p => ({ ...p, time: e.target.value }))} className="w-full border-b border-stone-300 py-2 text-sm focus:outline-none focus:border-[#D4AF37] bg-white">
+                          <option value="">--:--</option>
+                          {timeSlots.map(t => <option key={t} value={t}>{t}</option>)}
+                        </select>
+                      </div>
+                    </div>
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <label className="text-[10px] font-bold text-stone-400 uppercase tracking-widest">Prénom</label>
+                        <input required type="text" value={createResForm.firstName} onChange={e => setCreateResForm(p => ({ ...p, firstName: e.target.value }))} className="w-full border-b border-stone-300 py-2 text-sm focus:outline-none focus:border-[#D4AF37]" />
+                      </div>
+                      <div>
+                        <label className="text-[10px] font-bold text-stone-400 uppercase tracking-widest">Nom</label>
+                        <input required type="text" value={createResForm.lastName} onChange={e => setCreateResForm(p => ({ ...p, lastName: e.target.value }))} className="w-full border-b border-stone-300 py-2 text-sm focus:outline-none focus:border-[#D4AF37]" />
+                      </div>
+                    </div>
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <label className="text-[10px] font-bold text-stone-400 uppercase tracking-widest">Téléphone</label>
+                        <input type="tel" value={createResForm.phone} onChange={e => setCreateResForm(p => ({ ...p, phone: e.target.value }))} className="w-full border-b border-stone-300 py-2 text-sm focus:outline-none focus:border-[#D4AF37]" />
+                      </div>
+                      <div>
+                        <label className="text-[10px] font-bold text-stone-400 uppercase tracking-widest">Email</label>
+                        <input type="email" value={createResForm.email} onChange={e => setCreateResForm(p => ({ ...p, email: e.target.value }))} className="w-full border-b border-stone-300 py-2 text-sm focus:outline-none focus:border-[#D4AF37]" />
+                      </div>
+                    </div>
+                    <div>
+                      <label className="text-[10px] font-bold text-stone-400 uppercase tracking-widest">Notes</label>
+                      <textarea value={createResForm.notes} onChange={e => setCreateResForm(p => ({ ...p, notes: e.target.value }))} rows={2} className="w-full border-b border-stone-300 py-2 text-sm focus:outline-none focus:border-[#D4AF37] resize-none" />
+                    </div>
+                    <div className="flex gap-3 pt-2">
+                      <button type="submit" className="flex-1 bg-[#D4AF37] text-white py-2.5 text-xs font-bold uppercase tracking-widest rounded-lg">Créer la réservation</button>
+                      <button type="button" onClick={() => setShowCreateRes(false)} className="px-4 py-2.5 border border-stone-200 text-stone-500 text-xs font-bold uppercase tracking-widest rounded-lg">Annuler</button>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            )}
+
             <div className="flex justify-between items-center">
-              <h3 className="text-2xl font-serif">Demandes de Réservation</h3>
+              <div className="flex items-center gap-3">
+                <h3 className="text-2xl font-serif">Demandes de Réservation</h3>
+                <button onClick={() => setShowCreateRes(true)} className="flex items-center gap-1.5 bg-[#D4AF37] text-white px-3 py-1.5 rounded-lg text-xs font-bold uppercase tracking-widest hover:bg-[#B5952F] transition">
+                  <Plus size={14} /> Nouveau
+                </button>
+              </div>
               <div className="flex bg-white rounded-lg shadow-sm p-1 border border-stone-200">
                 <button 
                   onClick={() => setViewMode("active")}
