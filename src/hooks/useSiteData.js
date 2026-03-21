@@ -93,25 +93,27 @@ export const useSiteData = () => {
     return () => { clearTimeout(timeout); unsubs.forEach((u) => u()); };
   }, []);
 
-  // Firestore-backed setters (support both value and functional updates)
-  const makeSimpleSetter = (refKey, docName) => (valueOrFn) => {
+  // Firestore-backed setters avec mise à jour locale immédiate (optimistic update)
+  const makeSimpleSetter = (refKey, docName, setState) => (valueOrFn) => {
     const next = typeof valueOrFn === 'function' ? valueOrFn(refs[refKey].current) : valueOrFn;
+    setState(next);
     setDoc(configDoc(docName), next).catch(console.error);
   };
 
-  const makeArraySetter = (refKey, docName) => (valueOrFn) => {
+  const makeArraySetter = (refKey, docName, setState) => (valueOrFn) => {
     const next = typeof valueOrFn === 'function' ? valueOrFn(refs[refKey].current) : valueOrFn;
+    setState(next);
     setDoc(configDoc(docName), { items: next }).catch(console.error);
   };
 
   return {
     loading,
-    contactInfo,    setContactInfo:  makeSimpleSetter('contactInfo', 'contactInfo'),
-    openingHours,   setOpeningHours: makeSimpleSetter('openingHours', 'openingHours'),
-    services,       setServices:     makeArraySetter('services', 'services'),
-    events,         setEvents:       makeArraySetter('events', 'events'),
-    reservations,   setReservations: makeArraySetter('reservations', 'reservations'),
-    blockedSlots,   setBlockedSlots: makeArraySetter('blockedSlots', 'blockedSlots'),
-    siteContent,    setSiteContent:  makeSimpleSetter('siteContent', 'siteContent'),
+    contactInfo,    setContactInfo:  makeSimpleSetter('contactInfo',  'contactInfo',  _setContactInfo),
+    openingHours,   setOpeningHours: makeSimpleSetter('openingHours', 'openingHours', _setOpeningHours),
+    services,       setServices:     makeArraySetter ('services',     'services',     _setServices),
+    events,         setEvents:       makeArraySetter ('events',       'events',       _setEvents),
+    reservations,   setReservations: makeArraySetter ('reservations', 'reservations', _setReservations),
+    blockedSlots,   setBlockedSlots: makeArraySetter ('blockedSlots', 'blockedSlots', _setBlockedSlots),
+    siteContent,    setSiteContent:  makeSimpleSetter('siteContent',  'siteContent',  _setSiteContent),
   };
 };
