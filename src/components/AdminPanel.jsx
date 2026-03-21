@@ -11,8 +11,10 @@ import {
   Send,
   MessageSquarePlus,
   CalendarClock,
-  LayoutDashboard
+  LayoutDashboard,
+  TrendingUp
 } from 'lucide-react';
+import FinanceTab from './FinanceTab';
 
 const AdminPanel = ({ 
   contactInfo, 
@@ -316,6 +318,9 @@ const AdminPanel = ({
           <button onClick={() => setActiveTab("services")} className={`pb-4 text-xs font-bold uppercase tracking-widest transition-colors ${activeTab === 'services' ? 'text-[#D4AF37] border-b-2 border-[#D4AF37]' : 'text-stone-400 hover:text-stone-600'}`}>Soins & Tarifs</button>
           <button onClick={() => setActiveTab("contact")} className={`pb-4 text-xs font-bold uppercase tracking-widest transition-colors ${activeTab === 'contact' ? 'text-[#D4AF37] border-b-2 border-[#D4AF37]' : 'text-stone-400 hover:text-stone-600'}`}>Contact & Horaires</button>
           <button onClick={() => setActiveTab("content")} className={`pb-4 text-xs font-bold uppercase tracking-widest transition-colors ${activeTab === 'content' ? 'text-[#D4AF37] border-b-2 border-[#D4AF37]' : 'text-stone-400 hover:text-stone-600'}`}>Contenu Site</button>
+          <button onClick={() => setActiveTab("finance")} className={`pb-4 text-xs font-bold uppercase tracking-widest transition-colors flex items-center gap-1.5 ${activeTab === 'finance' ? 'text-[#D4AF37] border-b-2 border-[#D4AF37]' : 'text-stone-400 hover:text-stone-600'}`}>
+            <TrendingUp size={13} /> Finances
+          </button>
         </div>
 
         {activeTab === "dashboard" && (() => {
@@ -1111,6 +1116,10 @@ const AdminPanel = ({
               </div>
             </div>
           </div>
+        )}
+
+        {activeTab === "finance" && (
+          <FinanceTab reservations={reservations} services={services} />
         )}
 
         {activeTab === "slots" && (
