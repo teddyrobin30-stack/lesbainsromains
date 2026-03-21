@@ -27,13 +27,10 @@ const App = () => {
     services, setServices,
     events, setEvents,
     reservations, setReservations,
+    addReservation,
     blockedSlots, setBlockedSlots,
     siteContent, setSiteContent,
   } = useSiteData();
-
-  const handleAddReservation = (newRes) => {
-    setReservations(prev => [...prev, newRes]);
-  };
 
   const logoClicks = useRef(0);
   const handleLogoClick = () => {
@@ -97,7 +94,7 @@ const App = () => {
       services={services}
       openingHours={openingHours}
       events={events}
-      onAddReservation={handleAddReservation}
+      onAddReservation={addReservation}
       blockedSlots={blockedSlots}
       onAdminAccess={handleLogoClick}
       categories={categories}

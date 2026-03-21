@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { doc, onSnapshot, setDoc } from 'firebase/firestore';
+import { doc, collection, onSnapshot, setDoc, deleteDoc } from 'firebase/firestore';
 import { db } from '../firebase';
 import {
   DEFAULT_CONTACT_INFO,
@@ -10,6 +10,7 @@ import {
 } from '../data/constants';
 
 const configDoc = (name) => doc(db, 'config', name);
+const reservationDoc = (id) => doc(db, 'reservations', String(id));
 
 const mergeContent = (parsed) => ({
   ...DEFAULT_SITE_CONTENT,
@@ -34,13 +35,13 @@ export const useSiteData = () => {
 
   // Refs so functional setters always see the latest state
   const refs = {
-    contactInfo: useRef(contactInfo),
-    openingHours: useRef(openingHours),
-    services: useRef(services),
-    events: useRef(events),
-    reservations: useRef(reservations),
-    blockedSlots: useRef(blockedSlots),
-    siteContent: useRef(siteContent),
+    contactInfo: useRef(DEFAULT_CONTACT_INFO),
+    openingHours: useRef(DEFAULT_OPENING_HOURS),
+    services: useRef(DEFAULT_SERVICES_DATA),
+    events: useRef(DEFAULT_EVENTS),
+    reservations: useRef([]),
+    blockedSlots: useRef([]),
+    siteContent: useRef(DEFAULT_SITE_CONTENT),
   };
   useEffect(() => { refs.contactInfo.current = contactInfo; });
   useEffect(() => { refs.openingHours.current = openingHours; });
@@ -56,7 +57,6 @@ export const useSiteData = () => {
     const onLoad = () => { if (++loaded >= total) setLoading(false); };
     const onErr = (err) => { console.error('Firestore:', err); onLoad(); };
 
-    // Timeout de secours : si Firestore ne répond pas en 8s, on affiche quand même le site
     const timeout = setTimeout(() => setLoading(false), 8000);
 
     const unsubs = [
@@ -76,10 +76,6 @@ export const useSiteData = () => {
         if (snap.exists()) _setEvents(snap.data().items);
         onLoad();
       }, onErr),
-      onSnapshot(configDoc('reservations'), (snap) => {
-        if (snap.exists()) _setReservations(snap.data().items);
-        onLoad();
-      }, onErr),
       onSnapshot(configDoc('blockedSlots'), (snap) => {
         if (snap.exists()) _setBlockedSlots(snap.data().items);
         onLoad();
@@ -88,12 +84,18 @@ export const useSiteData = () => {
         if (snap.exists()) _setSiteContent(mergeContent(snap.data()));
         onLoad();
       }, onErr),
+      // Réservations : collection individuelle pour permettre les créations publiques
+      onSnapshot(collection(db, 'reservations'), (snap) => {
+        const items = snap.docs.map(d => ({ ...d.data(), _docId: d.id }));
+        _setReservations(items);
+        onLoad();
+      }, onErr),
     ];
 
     return () => { clearTimeout(timeout); unsubs.forEach((u) => u()); };
   }, []);
 
-  // Firestore-backed setters avec mise à jour locale immédiate (optimistic update)
+  // Setters config avec mise à jour locale immédiate (optimistic update)
   const makeSimpleSetter = (refKey, docName, setState) => (valueOrFn) => {
     const next = typeof valueOrFn === 'function' ? valueOrFn(refs[refKey].current) : valueOrFn;
     setState(next);
@@ -106,13 +108,45 @@ export const useSiteData = () => {
     setDoc(configDoc(docName), { items: next }).catch(console.error);
   };
 
+  // Setter réservations : détecte les ajouts, modifications et suppressions
+  const setReservations = (valueOrFn) => {
+    const oldArray = refs.reservations.current;
+    const newArray = typeof valueOrFn === 'function' ? valueOrFn(oldArray) : valueOrFn;
+    _setReservations(newArray);
+
+    const newIds = new Set(newArray.map(r => String(r.id)));
+
+    // Suppression
+    for (const r of oldArray) {
+      if (!newIds.has(String(r.id))) {
+        deleteDoc(reservationDoc(r.id)).catch(console.error);
+      }
+    }
+    // Ajout ou modification
+    for (const r of newArray) {
+      const old = oldArray.find(x => String(x.id) === String(r.id));
+      if (!old || JSON.stringify(old) !== JSON.stringify(r)) {
+        const { _docId, ...data } = r;
+        setDoc(reservationDoc(r.id), data).catch(console.error);
+      }
+    }
+  };
+
+  // Ajout d'une réservation par un visiteur (sans auth)
+  const addReservation = (newRes) => {
+    _setReservations(prev => [...prev, newRes]);
+    const { _docId, ...data } = newRes;
+    setDoc(reservationDoc(newRes.id), data).catch(console.error);
+  };
+
   return {
     loading,
     contactInfo,    setContactInfo:  makeSimpleSetter('contactInfo',  'contactInfo',  _setContactInfo),
     openingHours,   setOpeningHours: makeSimpleSetter('openingHours', 'openingHours', _setOpeningHours),
     services,       setServices:     makeArraySetter ('services',     'services',     _setServices),
     events,         setEvents:       makeArraySetter ('events',       'events',       _setEvents),
-    reservations,   setReservations: makeArraySetter ('reservations', 'reservations', _setReservations),
+    reservations,   setReservations,
+    addReservation,
     blockedSlots,   setBlockedSlots: makeArraySetter ('blockedSlots', 'blockedSlots', _setBlockedSlots),
     siteContent,    setSiteContent:  makeSimpleSetter('siteContent',  'siteContent',  _setSiteContent),
   };
