@@ -32,8 +32,6 @@ const AdminPanel = ({
   siteContent,
   setSiteContent
 }) => {
-  const [password, setPassword] = useState("");
-  const [isAuthenticated, setIsAuthenticated] = useState(true);
   const [activeTab, setActiveTab] = useState("dashboard");
   const [editService, setEditService] = useState(null);
   const [editEvent, setEditEvent] = useState(null);
@@ -96,15 +94,6 @@ const AdminPanel = ({
     '14:00', '14:30', '15:00', '15:30', '16:00', '16:30',
     '17:00', '17:30', '18:00'
   ];
-
-  const handleLogin = (e) => {
-    e.preventDefault();
-    if (password === "admin123") {
-      setIsAuthenticated(true);
-    } else {
-      alert("Mot de passe incorrect");
-    }
-  };
 
   const handleContactUpdate = (e) => {
     setContactInfo({ ...contactInfo, [e.target.name]: e.target.value });
@@ -274,27 +263,6 @@ const AdminPanel = ({
       setBlockedSlots([...blockedSlots.filter(s => s.date !== selectedSlotDate), newSlot]);
     }
   };
-
-  if (!isAuthenticated) {
-    return (
-      <div className="min-h-screen bg-stone-900 flex items-center justify-center p-6">
-        <div className="bg-white p-8 rounded-xl shadow-2xl max-w-sm w-full font-sans">
-          <h2 className="text-2xl font-serif text-stone-800 mb-6 text-center">Accès Administrateur</h2>
-          <form onSubmit={handleLogin} className="space-y-4">
-            <input 
-              type="password" 
-              placeholder="Mot de passe" 
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="w-full border-b border-stone-300 py-2 focus:outline-none focus:border-[#D4AF37]"
-            />
-            <button type="submit" className="w-full bg-[#D4AF37] text-white py-3 font-bold uppercase tracking-widest">Se connecter</button>
-            <button type="button" onClick={onExit} className="w-full text-stone-400 text-xs uppercase tracking-widest mt-4">Retour au site</button>
-          </form>
-        </div>
-      </div>
-    );
-  }
 
   return (
     <div className="min-h-screen bg-stone-50 font-sans text-stone-800">
