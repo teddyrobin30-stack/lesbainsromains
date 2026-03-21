@@ -54,39 +54,43 @@ export const useSiteData = () => {
     let loaded = 0;
     const total = 7;
     const onLoad = () => { if (++loaded >= total) setLoading(false); };
+    const onErr = (err) => { console.error('Firestore:', err); onLoad(); };
+
+    // Timeout de secours : si Firestore ne répond pas en 8s, on affiche quand même le site
+    const timeout = setTimeout(() => setLoading(false), 8000);
 
     const unsubs = [
       onSnapshot(configDoc('contactInfo'), (snap) => {
         if (snap.exists()) _setContactInfo(snap.data());
         onLoad();
-      }),
+      }, onErr),
       onSnapshot(configDoc('openingHours'), (snap) => {
         if (snap.exists()) _setOpeningHours(snap.data());
         onLoad();
-      }),
+      }, onErr),
       onSnapshot(configDoc('services'), (snap) => {
         if (snap.exists()) _setServices(snap.data().items);
         onLoad();
-      }),
+      }, onErr),
       onSnapshot(configDoc('events'), (snap) => {
         if (snap.exists()) _setEvents(snap.data().items);
         onLoad();
-      }),
+      }, onErr),
       onSnapshot(configDoc('reservations'), (snap) => {
         if (snap.exists()) _setReservations(snap.data().items);
         onLoad();
-      }),
+      }, onErr),
       onSnapshot(configDoc('blockedSlots'), (snap) => {
         if (snap.exists()) _setBlockedSlots(snap.data().items);
         onLoad();
-      }),
+      }, onErr),
       onSnapshot(configDoc('siteContent'), (snap) => {
         if (snap.exists()) _setSiteContent(mergeContent(snap.data()));
         onLoad();
-      }),
+      }, onErr),
     ];
 
-    return () => unsubs.forEach((u) => u());
+    return () => { clearTimeout(timeout); unsubs.forEach((u) => u()); };
   }, []);
 
   // Firestore-backed setters (support both value and functional updates)
